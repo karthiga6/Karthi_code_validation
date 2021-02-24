@@ -1,0 +1,34 @@
+#!/usr/bin/perl
+BEGIN { unshift @INC, "lib", "../lib", "/production/100v/rtl/tools/rtlweb/lib", "../" }
+use lib qw{/production/100v/custom_cpan/perl5/lib/perl5/5.16.3/x86_64-linux-thread-multi/};
+use lib qw{/production/100v/custom_cpan/perl5/lib/perl5/x86_64-linux-thread-multi/};
+use lib qw{/production/100v/custom_cpan/perl5/lib/perl5/};
+use warnings;
+use CGI;
+use CGI::Carp qw(fatalsToBrowser);
+use Switch;
+print "Content-type:text/plain\n\n";
+my $query = new CGI;
+my $search = $query->param("search");
+my $file = $query->param("file");
+my $bp = $query->param("bp");
+my $cmd="";
+$search =~ s/"/\\"/g;
+if ( $bp eq "ABC" ) {
+        $cmd = qx[ssh AB844691\@xxxxd535 "~/search.sh $file '$search'"];
+        $cmd .= qx[echo "\n \n Back Office Servers  \n"];
+        $cmd .= qx[ssh CD519245\@xxxxi784 "~/search.sh $file '$search'"];
+} else {
+        if ( $bp eq "EDV" ) {
+                $cmd = qx[ssh AB844691\@xxxxd091 "~/search.sh $file '$search'"];
+                $cmd .= qx[echo "\n \n Back Office Servers  \n"];
+                $cmd .= qx[ssh CD519245\@xxxxi781 "~/search.sh $file '$search'"];
+        } else {
+                if ( $bp eq "VMI" ) {
+                        $cmd = qx[ssh AB844691\@xxxxb492 "~/search.sh $file '$search'"];
+                         $cmd .= qx[echo "\n \n Back Office Servers  \n"];
+                        $cmd .= qx[ssh CD519245\@xxxxi778 "~/search.sh $file '$search'"];
+                } 
+        }
+}
+print $cmd;
